@@ -37,6 +37,7 @@ class Block(Basic):
         self.alive = False
 
 
+
 class Paddle(Basic):
     def __init__(self):
         super().__init__(config.paddle_color, 0, config.paddle_pos, config.paddle_size)
@@ -64,15 +65,13 @@ class Ball(Basic):
         pygame.draw.ellipse(surface, self.color, self.rect)
 
     def collide_block(self, blocks):
-        for block in blocks:
+        for block in blocks[:]:
             if self.rect.colliderect(block.rect) and block.alive:
                 block.collide()
-
-                if self.rect.top <= block.rect.bottom and self.rect.bottom >= block.rect.top:
-                    self.dir = 180 - self.dir
-                elif self.rect.left <= block.rect.right and self.rect.right >= block.rect.left:
-                    self.dir = -self.dir
-
+                blocks.remove(block)
+                
+                if self.rect.top <= block.rect.bottom or self.rect.bottom >= block.rect.top or self.rect.left <= block.rect.right or self.rect.right >= block.rect.left:
+                    self.dir = - self.dir
     def collide_paddle(self, paddle: Paddle) -> None:
         if self.rect.colliderect(paddle.rect):
             self.dir = 360 - self.dir + random.randint(-5, 5)
@@ -87,6 +86,6 @@ class Ball(Basic):
 
     
     def alive(self):
-        if self.rect.bottom > config.display_dimension[1]:
+        if self.rect.bottom >= config.display_dimension[1]:
             return False
         return True
