@@ -13,4 +13,4 @@
     <스크린샷>##</스크린샷> <br/>
   
 - <h3>Contributor</h3> <br/>
--> KMSymb  
+-> *KMSymb*
