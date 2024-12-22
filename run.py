@@ -30,7 +30,7 @@ def create_blocks():
                 + config.scoreboard_height
                 + j * (config.block_size[1] + config.spacing[1])
             )
-            if i % 3 == 2:
+            if i % 3 == 2 or ((i == 0 or i == config.num_blocks[0] - 1) and (j == 0 or j == config.num_blocks[1] - 1)) :
                 block = Block((171, 181, 189), (x, y), -1)
             else:
                 color_index = j % len(config.colors)
