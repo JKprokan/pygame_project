@@ -30,10 +30,15 @@ def create_blocks():
                 + config.scoreboard_height
                 + j * (config.block_size[1] + config.spacing[1])
             )
-            color_index = j % len(config.colors)
-            color = config.colors[color_index]
-            block = Block(color, (x, y))
+            if i % 3 == 2:
+                block = Block((171, 181, 189), (x, y), -1)
+            else:
+                color_index = j % len(config.colors)
+                color = config.colors[color_index]
+                block = Block(color, (x, y), config.collision_limit - color_index)
+
             BLOCKS.append(block)
+            
 
 
 def tick():
@@ -115,7 +120,7 @@ def main():
                 start = False
             else:
                 surface.blit(mess_over, (200, 300))
-        elif all(block.alive == False for block in BLOCKS):
+        elif all(block.durability == -1 or block.alive == False for block in BLOCKS):
             surface.blit(mess_clear, (200, 400))
         else:
             for ball in BALLS:

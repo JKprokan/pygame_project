@@ -25,18 +25,24 @@ class Basic:
 
 
 class Block(Basic):
-    def __init__(self, color: tuple, pos: tuple = (0,0), alive = True):
+    def __init__(self, color: tuple, pos: tuple = (0,0), durability = 1, alive = True):
         super().__init__(color, 0, pos, config.block_size)
         self.pos = pos
         self.alive = alive
+        self.durability = durability
 
     def draw(self, surface) -> None:
         pygame.draw.rect(surface, self.color, self.rect)
     
     def collide(self, items):
-        self.alive = False
-        self.drop_item(items)
-        
+        if self.durability > 0:
+            self.durability -= 1
+            if self.durability == 0:
+                self.alive = False
+                self.drop_item(items)
+                return
+            self.color = config.colors[config.collision_limit - self.durability]
+            
     def drop_item(self, items):
         if random.random() < 0.2:  # 20% 확률로 아이템 드롭
             item_color = random.choice(config.item_color)
@@ -73,7 +79,8 @@ class Ball(Basic):
         for block in blocks[:]:
             if self.rect.colliderect(block.rect) and block.alive:
                 block.collide(item)
-                blocks.remove(block)
+                if block.durability == 0:
+                    blocks.remove(block)
                 if self.rect.top <= block.rect.bottom or self.rect.bottom >= block.rect.top or self.rect.left <= block.rect.right or self.rect.right >= block.rect.left:
                     self.dir = - self.dir
 

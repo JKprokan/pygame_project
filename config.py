@@ -56,7 +56,7 @@ paddle_long_time = 5
 paddle_long_color = (0, 126, 255)
 
 colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0)]
-collision_limit = len(colors) - 1
+collision_limit = len(colors)
 
 # Total number of life.
 life = 3
