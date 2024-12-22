@@ -63,11 +63,19 @@ def tick():
             ball.rect.centerx = paddle.rect.centerx
             ball.rect.bottom = paddle.rect.top
 
-        ball.collide_block(BLOCKS)
+        ball.collide_block(BLOCKS, ITEMS)
         ball.collide_paddle(paddle)
         ball.hit_wall()
         if ball.alive() == False:
             BALLS.remove(ball)
+
+    for item in ITEMS[:]:
+        item.move()
+        if item.rect.colliderect(paddle.rect):
+            ITEMS.remove(item)
+        elif item.rect.top > config.display_dimension[1]:
+            ITEMS.remove(item)
+
 
 
 def main():
@@ -116,6 +124,8 @@ def main():
                 ball.draw(surface)
             for block in BLOCKS:
                 block.draw(surface)
+            for item in ITEMS:
+                item.draw(surface)
 
         pygame.display.update()
         fps_clock.tick(config.fps)
