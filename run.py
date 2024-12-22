@@ -14,7 +14,7 @@ fps_clock = pygame.time.Clock()
 
 paddle = Paddle()
 ball1 = Ball()
-BLOCKS = []
+BLOCKS = [] 
 ITEMS = []
 BALLS = [ball1]
 life = config.life
@@ -30,10 +30,15 @@ def create_blocks():
                 + config.scoreboard_height
                 + j * (config.block_size[1] + config.spacing[1])
             )
-            color_index = j % len(config.colors)
-            color = config.colors[color_index]
-            block = Block(color, (x, y))
+            if i % 3 == 2:
+                block = Block((171, 181, 189), (x, y), -1)
+            else:
+                color_index = j % len(config.colors)
+                color = config.colors[color_index]
+                block = Block(color, (x, y), config.collision_limit - color_index)
+
             BLOCKS.append(block)
+            
 
 
 def tick():
@@ -63,11 +68,19 @@ def tick():
             ball.rect.centerx = paddle.rect.centerx
             ball.rect.bottom = paddle.rect.top
 
-        ball.collide_block(BLOCKS)
+        ball.collide_block(BLOCKS, ITEMS)
         ball.collide_paddle(paddle)
         ball.hit_wall()
         if ball.alive() == False:
             BALLS.remove(ball)
+
+    for item in ITEMS[:]:
+        item.move()
+        if item.rect.colliderect(paddle.rect):
+            ITEMS.remove(item)
+        elif item.rect.top > config.display_dimension[1]:
+            ITEMS.remove(item)
+
 
 
 def main():
@@ -107,7 +120,7 @@ def main():
                 start = False
             else:
                 surface.blit(mess_over, (200, 300))
-        elif all(block.alive == False for block in BLOCKS):
+        elif all(block.durability == -1 or block.alive == False for block in BLOCKS):
             surface.blit(mess_clear, (200, 400))
         else:
             for ball in BALLS:
@@ -116,6 +129,8 @@ def main():
                 ball.draw(surface)
             for block in BLOCKS:
                 block.draw(surface)
+            for item in ITEMS:
+                item.draw(surface)
 
         pygame.display.update()
         fps_clock.tick(config.fps)

@@ -39,6 +39,8 @@ ball_size = (20, 20)
 
 # Setting for items
 item_size = (20, 20)
+item_color = [(178, 34, 34), (51, 204, 255)]
+item_speed = 5
 one_more_prob = 0.3
 fever_prob = 0.1
 add_score_prob = 0.1
@@ -54,7 +56,7 @@ paddle_long_time = 5
 paddle_long_color = (0, 126, 255)
 
 colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0)]
-collision_limit = len(colors) - 1
+collision_limit = len(colors)
 
 # Total number of life.
 life = 3

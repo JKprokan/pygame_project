@@ -25,17 +25,28 @@ class Basic:
 
 
 class Block(Basic):
-    def __init__(self, color: tuple, pos: tuple = (0,0), alive = True):
+    def __init__(self, color: tuple, pos: tuple = (0,0), durability = 1, alive = True):
         super().__init__(color, 0, pos, config.block_size)
         self.pos = pos
         self.alive = alive
+        self.durability = durability
 
     def draw(self, surface) -> None:
         pygame.draw.rect(surface, self.color, self.rect)
     
-    def collide(self):
-        self.alive = False
-
+    def collide(self, items):
+        if self.durability > 0:
+            self.durability -= 1
+            if self.durability == 0:
+                self.alive = False
+                self.drop_item(items)
+                return
+            self.color = config.colors[config.collision_limit - self.durability]
+            
+    def drop_item(self, items):
+        if random.random() < 0.2:  # 20% 확률로 아이템 드롭
+            item_color = random.choice(config.item_color)
+            items.append(Item(item_color, (self.rect.centerx, self.rect.centery)))
 
 
 class Paddle(Basic):
@@ -64,14 +75,15 @@ class Ball(Basic):
     def draw(self, surface):
         pygame.draw.ellipse(surface, self.color, self.rect)
 
-    def collide_block(self, blocks):
+    def collide_block(self, blocks, item):
         for block in blocks[:]:
             if self.rect.colliderect(block.rect) and block.alive:
-                block.collide()
-                blocks.remove(block)
-                
+                block.collide(item)
+                if block.durability == 0:
+                    blocks.remove(block)
                 if self.rect.top <= block.rect.bottom or self.rect.bottom >= block.rect.top or self.rect.left <= block.rect.right or self.rect.right >= block.rect.left:
                     self.dir = - self.dir
+
     def collide_paddle(self, paddle: Paddle) -> None:
         if self.rect.colliderect(paddle.rect):
             self.dir = 360 - self.dir + random.randint(-5, 5)
@@ -79,13 +91,18 @@ class Ball(Basic):
     def hit_wall(self):
         if self.rect.left <= 0 or self.rect.right >= config.display_dimension[0]:
             self.dir = 180 - self.dir
-
-
         if self.rect.top <= 0:
             self.dir = -self.dir
 
-    
     def alive(self):
         if self.rect.bottom >= config.display_dimension[1]:
             return False
         return True
+    
+
+class Item(Basic):
+    def __init__(self, color: tuple, pos: tuple = (0,0)):
+        super().__init__(color, config.item_speed, pos, config.item_size)
+
+    def draw(self, surface):
+        pygame.draw.ellipse(surface, self.color, self.rect)
