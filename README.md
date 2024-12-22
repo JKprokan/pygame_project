@@ -11,7 +11,7 @@
        
     ![image](https://github.com/user-attachments/assets/06026cc5-22df-4369-bc9d-67ebd09e5f41) <br/> 
 
-    2. 회색의 벽 블록을 만들고 이는 여러번 부딪혀야 깨진다. (빨강 블록->주황블록->노랑 블록->깨짐) <br/> 
+2. 회색의 벽 블록을 만들고 이는 여러번 부딪혀야 깨진다. (빨강 블록->주황블록->노랑 블록->깨짐) <br/> 
     ![image](https://github.com/user-attachments/assets/2f97552e-f977-4e46-b7f1-1276468c844a)
 
   
